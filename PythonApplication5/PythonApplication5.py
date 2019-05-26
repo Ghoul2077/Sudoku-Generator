@@ -1,4 +1,4 @@
-import random
+import random , os
 from PIL import Image, ImageDraw
 
 def check_1(x , temp_array ,  sudoku_array) :  # Check for the Block in which the cell exist
@@ -41,15 +41,6 @@ def check_2(x, counter, sudoku_array) :  # Check for the recurrance of number in
             flag_2 = False
             break
     return flag_2
-
-
-########################################################
-
-
-def print_row(temp_array) :
-    for o in range(9) :
-        print(temp_array[o], end = "    ")
-    print("\n")
 
 
 ########################################################
@@ -129,23 +120,36 @@ def brute_generator(sudoku_array) : # The main sudoku Generating Algo. , at leas
             counter+=1
             temp_array.append(x)
             blacklist = []
-    print_row(temp_array)
     sudoku_array.append(temp_array)
 
 
 ###########################################################
 
 
-sudoku_array = []   # This will be the generated sudoku , and we will treat it as answer
-sudoku = []  # The real sudoku that we will make from the answer
-for i in range(9) :
-    brute_generator(sudoku_array)
-board_generator("Answer")
-board_filler(sudoku_array, "Answer")
-#-----------------------------------------------------------
-board_generator("Sudoku")
-sudoku_generator(sudoku_array , sudoku) # Yet To be completed
-board_filler(sudoku , "Sudoku")
-
-
-# There is a bug in the program due to which it hangs in between sudoku generation and might be going in an infinite loop
+ans = 0
+clear = lambda: os.system('cls')
+while ans!=2 :
+    clear()
+    ans = int(input(""" 
+1.) Generate Sudoku
+2.) Exit \n\n> """))
+    if ans == 1 :
+        directory_name = input("Name of directory to be in which sudoku will be saved , \nIf you want you can leave it empty then default values will be used :-  ")
+        if directory_name :
+            if not os.path.isdir(directory_name) :
+                os.mkdir(directory_name)
+            directory_name += "/"
+        sudoku_array = []   # This will be the generated sudoku , and we will treat it as answer
+        sudoku = []  # The real sudoku that we will make from the answer
+        for i in range(9) :
+            brute_generator(sudoku_array)
+        board_generator(directory_name + "Answer")
+        board_filler(sudoku_array, directory_name + "Answer")
+#------------------------------------------------------------------
+        board_generator(directory_name + "Sudoku")
+        sudoku_generator(sudoku_array , sudoku)
+        board_filler(sudoku , directory_name + "Sudoku")
+    elif ans == 2 :
+        exit
+    else :
+        print("Try again with the options from 1 and 2")
